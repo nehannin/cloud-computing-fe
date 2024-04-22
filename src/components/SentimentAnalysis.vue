@@ -5,13 +5,47 @@
       <button @click="analyzeSentiment">Analyze</button>
       <div v-if="sentimentResult" class="result">
         <h2>Analysis Result:</h2>
-        <p>Sentiment: {{ sentimentResult.sentiment }}</p>
-        <p>Confidence: {{ sentimentResult.confidence }}</p>
+        <p class="sentiment-text">Sentiment: {{ sentimentResult.sentiment }}</p>
+        <p class="confidence-text">Confidence: {{ sentimentResult.confidence }}</p>
       </div>
     </div>
   </template>
   
   <script>
+  function analyzeSentiment(text) {
+    const words = text.toLowerCase().split(/\s+/);
+  
+    const positiveWords = ['good', 'happy', 'positive', 'awesome', 'wonderful', 'great', 'amazing'];
+    const negativeWords = ['bad', 'sad', 'negative', 'awful', 'terrible', 'unhappy', 'disapointing'];
+  
+    let positiveCount = 0;
+    let negativeCount = 0;
+  
+    words.forEach(word => {
+      if (positiveWords.includes(word)) {
+        positiveCount++;
+      } else if (negativeWords.includes(word)) {
+        negativeCount++;
+      }
+    });
+  
+    const sentimentScore = (positiveCount - negativeCount) / words.length;
+  
+    // Determine sentiment based on sentiment score
+    let sentiment;
+    if (sentimentScore > 0) {
+      sentiment = 'Positive';
+    } else if (sentimentScore < 0) {
+      sentiment = 'Negative';
+    } else {
+      sentiment = 'Neutral';
+    }
+  
+    const confidence = Math.abs(sentimentScore) * 100;
+  
+    return { sentiment, confidence };
+  }
+  
   export default {
     data() {
       return {
@@ -21,67 +55,60 @@
     },
     methods: {
       analyzeSentiment() {
-        // You can perform sentiment analysis here using an API or library
-        // For simplicity, let's assume sentiment analysis is done locally
-        // Replace this with actual sentiment analysis logic
-        const sentiment = Math.random() < 0.5 ? 'Positive' : 'Negative';
-        const confidence = Math.floor(Math.random() * 100) + 1;
-        this.sentimentResult = { sentiment, confidence };
+        // Call the sentiment analysis function with inputText
+        this.sentimentResult = analyzeSentiment(this.inputText);
       }
     }
   };
   </script>
   
   <style scoped>
-  /* Style for textarea */
   textarea {
     width: 100%;
     height: 100px;
+    margin-top: 10px;
     margin-bottom: 10px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 1rem;
   }
   
-  /* Style for analyze button */
   button {
     padding: 10px 20px;
-    background-color: #007bff;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    background-color: #828a41;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1rem;
     transition: background-color 0.3s ease;
   }
   
   button:hover {
-    background-color: #0056b3;
+    background-color: #444924;
   }
   
-  /* Style for result container */
   .result {
     margin-top: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 20px;
-    background-color: #f9f9f9;
   }
   
-  /* Style for sentiment text */
   .sentiment-text {
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: bold;
     margin-bottom: 10px;
   }
   
-  /* Style for confidence text */
   .confidence-text {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
   
-  /* Media query for smaller screens */
   @media (max-width: 768px) {
     textarea {
       height: 80px;
