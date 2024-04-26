@@ -12,40 +12,6 @@
   </template>
   
   <script>
-  function analyzeSentiment(text) {
-    const words = text.toLowerCase().split(/\s+/);
-  
-    const positiveWords = ['good', 'happy', 'positive', 'awesome', 'wonderful', 'great', 'amazing'];
-    const negativeWords = ['bad', 'sad', 'negative', 'awful', 'terrible', 'unhappy', 'disapointing'];
-  
-    let positiveCount = 0;
-    let negativeCount = 0;
-  
-    words.forEach(word => {
-      if (positiveWords.includes(word)) {
-        positiveCount++;
-      } else if (negativeWords.includes(word)) {
-        negativeCount++;
-      }
-    });
-  
-    const sentimentScore = (positiveCount - negativeCount) / words.length;
-  
-    // Determine sentiment based on sentiment score
-    let sentiment;
-    if (sentimentScore > 0) {
-      sentiment = 'Positive';
-    } else if (sentimentScore < 0) {
-      sentiment = 'Negative';
-    } else {
-      sentiment = 'Neutral';
-    }
-  
-    const confidence = Math.abs(sentimentScore) * 100;
-  
-    return { sentiment, confidence };
-  }
-  
   export default {
     data() {
       return {
@@ -54,10 +20,28 @@
       };
     },
     methods: {
-      analyzeSentiment() {
-        // Call the sentiment analysis function with inputText
-        this.sentimentResult = analyzeSentiment(this.inputText);
-      }
+      async analyzeSentiment() {
+        try {
+            const response = await fetch('http://localhost:8080/analyze_sentiment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: this.inputText }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to analyze sentiment');
+            }
+
+            const data = await response.json();
+            this.sentimentResult = data;
+        } catch (error) {
+            console.error(error);
+            this.sentimentResult = null;
+        }
+    }
+
     }
   };
   </script>

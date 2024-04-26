@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "asycn": "^0.0.1-security",
     "vue": "^3.4.21"
   },
   "devDependencies": {
