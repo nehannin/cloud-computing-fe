@@ -6,7 +6,6 @@
       <div v-if="sentimentResult" class="result">
         <h2>Analysis Result:</h2>
         <p class="sentiment-text">Sentiment: {{ sentimentResult.sentiment }}</p>
-        <p class="confidence-text">Confidence: {{ sentimentResult.confidence }}</p>
       </div>
     </div>
   </template>
